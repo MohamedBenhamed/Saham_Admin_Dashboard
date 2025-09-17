@@ -8,6 +8,8 @@ export class Property {
   public readonly description: string;
   public readonly price: number;
   public readonly location: string;
+  public readonly cityId?: number;
+  public readonly typePropertyId?: number;
   public readonly propertyType: string;
   public readonly bedrooms: number;
   public readonly bathrooms: number;
@@ -26,6 +28,8 @@ export class Property {
     description,
     price,
     location,
+    cityId,
+    typePropertyId,
     propertyType,
     bedrooms,
     bathrooms,
@@ -43,6 +47,8 @@ export class Property {
     description: string;
     price: number;
     location: string;
+    cityId?: number;
+    typePropertyId?: number;
     propertyType: string;
     bedrooms: number;
     bathrooms: number;
@@ -60,6 +66,8 @@ export class Property {
     this.description = description;
     this.price = price;
     this.location = location;
+    this.cityId = cityId;
+    this.typePropertyId = typePropertyId;
     this.propertyType = propertyType;
     this.bedrooms = bedrooms;
     this.bathrooms = bathrooms;
@@ -126,6 +134,8 @@ export class Property {
       description: this.description,
       price: this.price,
       location: this.location,
+      cityId: this.cityId,
+      typePropertyId: this.typePropertyId,
       propertyType: this.propertyType,
       bedrooms: this.bedrooms,
       bathrooms: this.bathrooms,
@@ -174,6 +184,8 @@ export class Property {
       description: apiData.description,
       price: apiData.price,
       location: apiData.location || apiData.nearby || '',
+      cityId: apiData.cityId,
+      typePropertyId: apiData.typePropertyId,
       propertyType: propertyType,
       bedrooms: apiData.bedrooms,
       bathrooms: apiData.bathrooms,

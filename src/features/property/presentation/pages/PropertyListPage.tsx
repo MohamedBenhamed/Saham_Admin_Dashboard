@@ -95,7 +95,8 @@ export const PropertyListPage = () => {
 
   const handleViewProperty = (property) => {
     console.log('View property:', property);
-    // Navigate to property detail page
+    // Navigate to property view page
+    navigate(`/admin/properties/view/${property.id}`);
   };
 
   const handleEditProperty = (property) => {

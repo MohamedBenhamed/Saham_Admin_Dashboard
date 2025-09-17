@@ -3,7 +3,7 @@
  * Displays detailed property information fetched by ID
  */
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -20,6 +20,8 @@ import {
   Building2
 } from 'lucide-react';
 import { propertyApi } from '@/features/property/data/api/propertyApi';
+import { useCityName } from '@/hooks/useCity';
+import { usePropertyTypeName } from '@/hooks/usePropertyType';
 import { Property } from '@/features/property/domain/entities/Property';
 
 interface PropertyDetails {
@@ -44,9 +46,28 @@ interface PropertyDetails {
 export const PropertyViewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [property, setProperty] = useState<PropertyDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Get city name by ID
+  const { cityName, loading: cityLoading, error: cityError } = useCityName(property?.cityId);
+  
+  // Get property type name by ID
+  const { propertyTypeName, loading: propertyTypeLoading, error: propertyTypeError } = usePropertyTypeName(property?.typePropertyId);
+
+  // Function to handle back navigation
+  const handleBackNavigation = () => {
+    // Check if there's a previous page in history
+    if (window.history.length > 1) {
+      // Go back to the previous page
+      navigate(-1);
+    } else {
+      // Fallback to investments if no history
+      navigate('/admin/investments');
+    }
+  };
 
   useEffect(() => {
     const fetchProperty = async () => {
@@ -76,16 +97,6 @@ export const PropertyViewPage: React.FC = () => {
     fetchProperty();
   }, [id]);
 
-  const getPropertyTypeName = (typePropertyId: number): string => {
-    const typeMap: Record<number, string> = {
-      1: 'Apartment',
-      2: 'House', 
-      3: 'Villa',
-      4: 'Commercial',
-      5: 'Land'
-    };
-    return typeMap[typePropertyId] || 'Unknown';
-  };
 
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-US', {
@@ -121,9 +132,9 @@ export const PropertyViewPage: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">Error: {error}</p>
-          <Button onClick={() => navigate('/admin/investments')} variant="outline">
+          <Button onClick={handleBackNavigation} variant="outline">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Investments
+            Back
           </Button>
         </div>
       </div>
@@ -135,9 +146,9 @@ export const PropertyViewPage: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600 mb-4">Property not found</p>
-          <Button onClick={() => navigate('/admin/investments')} variant="outline">
+          <Button onClick={handleBackNavigation} variant="outline">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Investments
+            Back
           </Button>
         </div>
       </div>
@@ -152,11 +163,11 @@ export const PropertyViewPage: React.FC = () => {
           <div className="flex items-center space-x-4">
             <Button
               variant="outline"
-              onClick={() => navigate('/admin/investments')}
+              onClick={handleBackNavigation}
               className="flex items-center"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Investments
+              Back
             </Button>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">{property.title}</h1>
@@ -228,8 +239,16 @@ export const PropertyViewPage: React.FC = () => {
                     <p className="text-gray-900">{property.nearby || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">City ID</label>
-                    <p className="text-gray-900">{property.cityId || 'N/A'}</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                    <p className="text-gray-900">
+                      {cityLoading ? (
+                        <span className="text-gray-500">Loading city...</span>
+                      ) : cityError ? (
+                        <span className="text-red-500">Error loading city</span>
+                      ) : (
+                        cityName || 'N/A'
+                      )}
+                    </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
@@ -254,7 +273,15 @@ export const PropertyViewPage: React.FC = () => {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Type</span>
-                  <Badge variant="outline">{getPropertyTypeName(property.typePropertyId)}</Badge>
+                  <Badge variant="outline">
+                    {propertyTypeLoading ? (
+                      <span className="text-gray-400">Loading...</span>
+                    ) : propertyTypeError ? (
+                      <span className="text-red-500">Error</span>
+                    ) : (
+                      propertyTypeName || 'Unknown'
+                    )}
+                  </Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600 flex items-center">

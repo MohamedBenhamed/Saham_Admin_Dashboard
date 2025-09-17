@@ -11,6 +11,9 @@ export const translations = {
     reports: 'Reports',
     notifications: 'Notifications',
     settings: 'Settings',
+    systemManagement: 'System Management',
+    cities: 'Cities',
+    propertyTypes: 'Property Types',
     help: 'Help',
     signOut: 'Sign Out',
     
@@ -71,6 +74,9 @@ export const translations = {
     reports: 'التقارير',
     notifications: 'الإشعارات',
     settings: 'الإعدادات',
+    systemManagement: 'إدارة النظام',
+    cities: 'المدن',
+    propertyTypes: 'أنواع العقارات',
     help: 'المساعدة',
     signOut: 'تسجيل الخروج',
     

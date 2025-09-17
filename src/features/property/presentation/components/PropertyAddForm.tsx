@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { CitiesDropdown } from '@/components/ui/CitiesDropdown';
+import { PropertyTypesDropdown } from '@/components/ui/PropertyTypesDropdown';
 import { PropertyImageManager, PropertyImage } from './PropertyImageManager';
 import { useAuth } from '@/contexts/AuthContext';
 import { 
@@ -472,22 +473,12 @@ export const PropertyAddForm: React.FC<PropertyAddFormProps> = ({
                   <label htmlFor="cityId" className="block text-sm font-medium text-gray-700 mb-1">
                     City *
                   </label>
-                  <Select
+                  <CitiesDropdown
                     value={formData.cityId.toString()}
                     onValueChange={(value) => handleSelectChange('cityId', value)}
-                  >
-                    <SelectTrigger className={errors.cityId ? 'border-red-500' : ''}>
-                      <SelectValue placeholder="Select city" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Tripoli</SelectItem>
-                      <SelectItem value="2">Benghazi</SelectItem>
-                      <SelectItem value="3">Misrata</SelectItem>
-                      <SelectItem value="4">Zawiya</SelectItem>
-                      <SelectItem value="5">Sabha</SelectItem>
-                      <SelectItem value="6">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    placeholder="Select city"
+                    error={!!errors.cityId}
+                  />
                   {errors.cityId && (
                     <p className="text-red-500 text-sm mt-1">{errors.cityId}</p>
                   )}
@@ -497,21 +488,12 @@ export const PropertyAddForm: React.FC<PropertyAddFormProps> = ({
                   <label htmlFor="typePropertyId" className="block text-sm font-medium text-gray-700 mb-1">
                     Property Type *
                   </label>
-                  <Select
+                  <PropertyTypesDropdown
                     value={formData.typePropertyId.toString()}
                     onValueChange={(value) => handleSelectChange('typePropertyId', value)}
-                  >
-                    <SelectTrigger className={errors.typePropertyId ? 'border-red-500' : ''}>
-                      <SelectValue placeholder="Select property type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Apartment</SelectItem>
-                      <SelectItem value="2">House</SelectItem>
-                      <SelectItem value="3">Villa</SelectItem>
-                      <SelectItem value="4">Commercial</SelectItem>
-                      <SelectItem value="5">Land</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    placeholder="Select property type"
+                    error={!!errors.typePropertyId}
+                  />
                   {errors.typePropertyId && (
                     <p className="text-red-500 text-sm mt-1">{errors.typePropertyId}</p>
                   )}

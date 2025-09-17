@@ -15,7 +15,6 @@ import {
 import {
   Search,
   Filter,
-  Download,
   Eye,
   Edit,
   Plus,
@@ -28,9 +27,33 @@ import {
 import { formatDate, formatCurrency, formatNumber, getStatusColor } from '@/lib/utils'
 import { Property } from '@/features/property/domain/entities/Property'
 import { propertyApi } from '@/features/property/data/api/propertyApi'
+import { useCityName } from '@/hooks/useCity'
+import { usePropertyTypeName } from '@/hooks/usePropertyType'
 
 const statusOptions = ['all', '1', '2', '3', '4', '5']
 const typeOptions = ['all', 'Apartment', 'House', 'Villa', 'Commercial', 'Land']
+
+// Component to display city name by ID
+const CityNameCell: React.FC<{ cityId?: number; fallback?: string }> = ({ cityId, fallback = 'N/A' }) => {
+  const { cityName, loading } = useCityName(cityId);
+  
+  if (loading) {
+    return <span className="text-gray-400">Loading...</span>;
+  }
+  
+  return <span>{cityName || fallback}</span>;
+};
+
+// Component to display property type name by ID
+const PropertyTypeNameCell: React.FC<{ typePropertyId?: number; fallback?: string }> = ({ typePropertyId, fallback = 'Unknown' }) => {
+  const { propertyTypeName, loading } = usePropertyTypeName(typePropertyId);
+  
+  if (loading) {
+    return <span className="text-gray-400">Loading...</span>;
+  }
+  
+  return <span>{propertyTypeName || fallback}</span>;
+};
 
 export function Investments() {
   const navigate = useNavigate()
@@ -171,10 +194,6 @@ export function Investments() {
           <p className="text-gray-600 mt-1">Manage investment properties and opportunities</p>
         </div>
         <div className="flex space-x-3">
-          <Button variant="outline">
-            <Download className="w-4 h-4 mr-2" />
-            Export
-          </Button>
           <Button>
             <Plus className="w-4 h-4 mr-2" />
             Add Investment
@@ -316,7 +335,9 @@ export function Investments() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">{property.propertyType}</Badge>
+                        <Badge variant="outline">
+                          <PropertyTypeNameCell typePropertyId={property.typePropertyId} fallback={property.propertyType} />
+                        </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge variant={getStatusBadgeVariant(property.status) as any}>
@@ -330,7 +351,7 @@ export function Investments() {
                       </TableCell>
                       <TableCell>
                         <div className="text-sm text-gray-600">
-                          {property.location}
+                          <CityNameCell cityId={property.cityId} fallback={property.location} />
                         </div>
                       </TableCell>
                       <TableCell>

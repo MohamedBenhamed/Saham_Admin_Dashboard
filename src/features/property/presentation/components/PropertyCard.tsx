@@ -18,6 +18,8 @@ import {
   User
 } from 'lucide-react';
 import { Property } from '@/features/property/domain/entities/Property';
+import { useCityName } from '@/hooks/useCity';
+import { usePropertyTypeName } from '@/hooks/usePropertyType';
 
 interface PropertyCardProps {
   property: Property | null;
@@ -46,6 +48,12 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   showActions = true,
   className = '' 
 }) => {
+  // Get city name by ID
+  const { cityName, loading: cityLoading } = useCityName(property?.cityId);
+  
+  // Get property type name by ID
+  const { propertyTypeName, loading: propertyTypeLoading } = usePropertyTypeName(property?.typePropertyId);
+  
   if (!property) {
     return (
       <Card className={`admin-card admin-card-hover ${className}`}>
@@ -161,8 +169,12 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
             </CardTitle>
             <CardDescription className="flex items-center mt-1 text-sm text-gray-600 truncate">
               <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
-              <span className="truncate" title={property.location || 'Location not specified'}>
-                {property.location || 'Location not specified'}
+              <span className="truncate" title={cityName || property.location || 'Location not specified'}>
+                {cityLoading ? (
+                  <span className="text-gray-400">Loading city...</span>
+                ) : (
+                  cityName || property.location || 'Location not specified'
+                )}
               </span>
             </CardDescription>
           </div>
@@ -194,7 +206,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         {/* Property Type */}
         <div className="mb-3">
           <Badge variant="outline" className="text-xs">
-            {property.propertyType || 'Unknown Type'}
+            {propertyTypeLoading ? (
+              <span className="text-gray-400">Loading...</span>
+            ) : (
+              propertyTypeName || property.propertyType || 'Unknown Type'
+            )}
           </Badge>
         </div>
 
