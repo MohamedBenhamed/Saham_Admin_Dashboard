@@ -119,7 +119,21 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    // Add RTL support
+    function({ addUtilities }: any) {
+      const newUtilities = {
+        '.rtl': {
+          direction: 'rtl',
+        },
+        '.ltr': {
+          direction: 'ltr',
+        },
+      };
+      addUtilities(newUtilities);
+    }
+  ],
 } satisfies Config
 
 export default config
