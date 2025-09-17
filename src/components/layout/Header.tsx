@@ -125,7 +125,7 @@ export function Header({ onMenuToggle, title, subtitle }: HeaderProps) {
         {/* User menu */}
         <div className="flex items-center space-x-3">
           <div className="hidden sm:block text-right">
-            <p className="text-sm font-medium text-gray-900">{user?.name || user?.username || 'Admin'}</p>
+            <p className="text-sm font-medium text-gray-900">{user?.name || user?.phoneNumber || 'Admin'}</p>
             <p className="text-xs text-gray-500">{user?.email || 'admin@saham.com'}</p>
           </div>
           <div className="relative" ref={userMenuRef}>
@@ -144,7 +144,7 @@ export function Header({ onMenuToggle, title, subtitle }: HeaderProps) {
             {showUserMenu && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
                 <div className="px-4 py-2 border-b border-gray-100">
-                  <p className="text-sm font-medium text-gray-900">{user?.name || user?.username}</p>
+                  <p className="text-sm font-medium text-gray-900">{user?.name || user?.phoneNumber}</p>
                   <p className="text-xs text-gray-500">{user?.email}</p>
                 </div>
                 <button

@@ -17,6 +17,16 @@ import {
   Calendar,
   User
 } from 'lucide-react';
+import { Property } from '@/features/property/domain/entities/Property';
+
+interface PropertyCardProps {
+  property: Property | null;
+  onView?: (property: Property) => void;
+  onEdit?: (property: Property) => void;
+  onDelete?: (property: Property) => void;
+  showActions?: boolean;
+  className?: string;
+}
 
 /**
  * PropertyCard Component
@@ -28,7 +38,7 @@ import {
  * @param {boolean} props.showActions - Whether to show action buttons
  * @param {string} props.className - Additional CSS classes
  */
-export const PropertyCard = ({ 
+export const PropertyCard: React.FC<PropertyCardProps> = ({ 
   property, 
   onView, 
   onEdit, 
@@ -60,7 +70,7 @@ export const PropertyCard = ({
     if (onDelete) onDelete(property);
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
       case 'available':
       case 'active':
@@ -77,7 +87,7 @@ export const PropertyCard = ({
     }
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     if (!dateString) return 'N/A';
     try {
       return new Date(dateString).toLocaleDateString();
@@ -87,17 +97,21 @@ export const PropertyCard = ({
   };
 
   return (
-    <Card className={`admin-card admin-card-hover ${className}`}>
+    <Card className={`admin-card admin-card-hover w-full max-w-sm mx-auto ${className}`}>
       {/* Property Image */}
       <div className="relative h-48 bg-gray-200 rounded-t-lg overflow-hidden">
         {property.getPrimaryImage() ? (
           <img
-            src={property.getPrimaryImage()}
+            src={property.getPrimaryImage() || ''}
             alt={property.title}
             className="w-full h-full object-cover"
             onError={(e) => {
-              e.target.style.display = 'none';
-              e.target.nextSibling.style.display = 'flex';
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+              const nextSibling = target.nextSibling as HTMLElement;
+              if (nextSibling) {
+                nextSibling.style.display = 'flex';
+              }
             }}
           />
         ) : null}
@@ -137,18 +151,23 @@ export const PropertyCard = ({
       </div>
 
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <CardTitle className="text-lg font-semibold text-gray-900 line-clamp-2">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <CardTitle 
+              className="text-lg font-semibold text-gray-900 truncate"
+              title={property.title || 'Untitled Property'}
+            >
               {property.title || 'Untitled Property'}
             </CardTitle>
-            <CardDescription className="flex items-center mt-1 text-sm text-gray-600">
-              <MapPin className="w-4 h-4 mr-1" />
-              {property.location || 'Location not specified'}
+            <CardDescription className="flex items-center mt-1 text-sm text-gray-600 truncate">
+              <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
+              <span className="truncate" title={property.location || 'Location not specified'}>
+                {property.location || 'Location not specified'}
+              </span>
             </CardDescription>
           </div>
-          <div className="text-right ml-4">
-            <div className="text-xl font-bold text-primary">
+          <div className="text-right flex-shrink-0">
+            <div className="text-xl font-bold text-primary whitespace-nowrap">
               {property.getFormattedPrice()}
             </div>
           </div>
@@ -157,18 +176,18 @@ export const PropertyCard = ({
 
       <CardContent className="pt-0">
         {/* Property Details */}
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          <div className="flex items-center text-sm text-gray-600">
-            <Bed className="w-4 h-4 mr-1" />
-            <span>{property.bedrooms || 0} bed</span>
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="flex items-center text-sm text-gray-600 min-w-0">
+            <Bed className="w-4 h-4 mr-1 flex-shrink-0" />
+            <span className="truncate">{property.bedrooms || 0} bed</span>
           </div>
-          <div className="flex items-center text-sm text-gray-600">
-            <Bath className="w-4 h-4 mr-1" />
-            <span>{property.bathrooms || 0} bath</span>
+          <div className="flex items-center text-sm text-gray-600 min-w-0">
+            <Bath className="w-4 h-4 mr-1 flex-shrink-0" />
+            <span className="truncate">{property.bathrooms || 0} bath</span>
           </div>
-          <div className="flex items-center text-sm text-gray-600">
-            <Square className="w-4 h-4 mr-1" />
-            <span>{property.area || 0} sq ft</span>
+          <div className="flex items-center text-sm text-gray-600 min-w-0">
+            <Square className="w-4 h-4 mr-1 flex-shrink-0" />
+            <span className="truncate">{property.area || 0} sq ft</span>
           </div>
         </div>
 
@@ -181,7 +200,10 @@ export const PropertyCard = ({
 
         {/* Description */}
         {property.description && (
-          <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+          <p 
+            className="text-sm text-gray-600 mb-4 line-clamp-2"
+            title={property.description}
+          >
             {property.description}
           </p>
         )}
@@ -207,7 +229,7 @@ export const PropertyCard = ({
           <div className="mb-4">
             <div className="text-xs font-medium text-gray-700 mb-2">Features:</div>
             <div className="flex flex-wrap gap-1">
-              {property.features.slice(0, 3).map((feature, index) => (
+              {property.features.slice(0, 3).map((feature: string, index: number) => (
                 <Badge key={index} variant="secondary" className="text-xs">
                   {feature}
                 </Badge>
@@ -223,20 +245,21 @@ export const PropertyCard = ({
 
         {/* Action Buttons */}
         {showActions && (
-          <div className="flex space-x-2">
+          <div className="flex gap-2">
             <Button
               variant="outline"
               size="sm"
-              className="flex-1"
+              className="flex-1 min-w-0"
               onClick={handleView}
             >
-              <Eye className="w-4 h-4 mr-1" />
-              View
+              <Eye className="w-4 h-4 mr-1 flex-shrink-0" />
+              <span className="truncate">View</span>
             </Button>
             {onEdit && (
               <Button
                 variant="outline"
                 size="sm"
+                className="flex-shrink-0"
                 onClick={handleEdit}
               >
                 Edit
@@ -246,8 +269,8 @@ export const PropertyCard = ({
               <Button
                 variant="outline"
                 size="sm"
+                className="flex-shrink-0 text-red-600 hover:text-red-700 hover:bg-red-50"
                 onClick={handleDelete}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
               >
                 Delete
               </Button>
@@ -265,23 +288,23 @@ export const PropertyCard = ({
  */
 export const PropertyCardSkeleton = ({ className = '' }) => {
   return (
-    <Card className={`admin-card ${className}`}>
+    <Card className={`admin-card w-full max-w-sm mx-auto ${className}`}>
       {/* Image Skeleton */}
       <div className="h-48 bg-gray-200 rounded-t-lg animate-pulse" />
       
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
             <div className="h-5 bg-gray-200 rounded animate-pulse mb-2" />
             <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4" />
           </div>
-          <div className="h-6 bg-gray-200 rounded animate-pulse w-20 ml-4" />
+          <div className="h-6 bg-gray-200 rounded animate-pulse w-20 flex-shrink-0" />
         </div>
       </CardHeader>
 
       <CardContent className="pt-0">
         {/* Details Skeleton */}
-        <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-3 gap-2 mb-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-4 bg-gray-200 rounded animate-pulse" />
           ))}
@@ -294,7 +317,7 @@ export const PropertyCardSkeleton = ({ className = '' }) => {
         </div>
 
         {/* Button Skeleton */}
-        <div className="flex space-x-2">
+        <div className="flex gap-2">
           <div className="flex-1 h-8 bg-gray-200 rounded animate-pulse" />
           <div className="h-8 bg-gray-200 rounded animate-pulse w-16" />
         </div>

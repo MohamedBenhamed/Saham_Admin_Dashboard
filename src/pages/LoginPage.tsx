@@ -12,7 +12,7 @@ import { Eye, EyeOff, Lock, User, Building2, AlertCircle } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const [formData, setFormData] = useState({
-    username: '',
+    phoneNumber: '',
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -26,8 +26,10 @@ export const LoginPage: React.FC = () => {
 
   // Redirect if already authenticated
   useEffect(() => {
+    console.log('LoginPage useEffect - isAuthenticated:', isAuthenticated, 'isLoading:', isLoading);
     if (isAuthenticated && !isLoading) {
       const from = location.state?.from?.pathname || '/admin';
+      console.log('Already authenticated, redirecting to:', from);
       navigate(from, { replace: true });
     }
   }, [isAuthenticated, isLoading, navigate, location]);
@@ -55,8 +57,10 @@ export const LoginPage: React.FC = () => {
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
+    if (!formData.phoneNumber.trim()) {
+      newErrors.phoneNumber = 'Phone number is required';
+    } else if (!/^\+?[\d\s\-\(\)]+$/.test(formData.phoneNumber.trim())) {
+      newErrors.phoneNumber = 'Please enter a valid phone number';
     }
 
     if (!formData.password.trim()) {
@@ -80,13 +84,16 @@ export const LoginPage: React.FC = () => {
     setLoginError(null);
 
     try {
-      const success = await login(formData.username, formData.password);
+      const success = await login(formData.phoneNumber, formData.password);
       
       if (success) {
+        console.log('Login successful, redirecting to admin dashboard...');
         const from = location.state?.from?.pathname || '/admin';
+        console.log('Redirecting to:', from);
         navigate(from, { replace: true });
       } else {
-        setLoginError('Invalid username or password. Please try again.');
+        console.log('Login failed: Invalid credentials');
+        setLoginError('Invalid phone number or password. Please try again.');
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -131,25 +138,25 @@ export const LoginPage: React.FC = () => {
           
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Username Field */}
+              {/* Phone Number Field */}
               <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                  Username
+                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <Input
-                    id="username"
-                    type="text"
-                    value={formData.username}
-                    onChange={(e) => handleInputChange('username', e.target.value)}
-                    placeholder="Enter your username"
-                    className={`pl-10 ${errors.username ? 'border-red-500' : ''}`}
+                    id="phoneNumber"
+                    type="tel"
+                    value={formData.phoneNumber}
+                    onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                    placeholder="Enter your phone number"
+                    className={`pl-10 ${errors.phoneNumber ? 'border-red-500' : ''}`}
                     disabled={isSubmitting}
                   />
                 </div>
-                {errors.username && (
-                  <p className="text-red-500 text-sm mt-1">{errors.username}</p>
+                {errors.phoneNumber && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>
                 )}
               </div>
 
@@ -214,14 +221,6 @@ export const LoginPage: React.FC = () => {
               </Button>
             </form>
 
-            {/* Demo Credentials */}
-            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-              <h4 className="text-sm font-medium text-blue-900 mb-2">Demo Credentials</h4>
-              <div className="text-sm text-blue-700 space-y-1">
-                <p><strong>Username:</strong> admin</p>
-                <p><strong>Password:</strong> admin123</p>
-              </div>
-            </div>
           </CardContent>
         </Card>
 

@@ -2,13 +2,14 @@
  * PropertyAddForm Component
  * Form for adding new property information
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PropertyImageManager, PropertyImage } from './PropertyImageManager';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   Save, 
   X, 
@@ -49,6 +50,8 @@ export const PropertyAddForm: React.FC<PropertyAddFormProps> = ({
   onCancel,
   loading = false
 }) => {
+  const { user } = useAuth();
+  
   const [formData, setFormData] = useState<PropertyFormData>({
     title: '',
     description: '',
@@ -64,11 +67,20 @@ export const PropertyAddForm: React.FC<PropertyAddFormProps> = ({
     nearby: '',
     cityId: 0,
     typePropertyId: 0,
-    userId: '',
+    userId: user?.id || '',
     images: []
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Update userId when user changes
+  useEffect(() => {
+    console.log('PropertyAddForm - User from AuthContext:', user);
+    if (user?.id) {
+      console.log('PropertyAddForm - Setting userId from user.id:', user.id);
+      setFormData(prev => ({ ...prev, userId: user.id }));
+    }
+  }, [user?.id]);
 
   // Handle input changes
   const handleInputChange = (field: keyof PropertyFormData, value: string | number) => {
@@ -79,10 +91,11 @@ export const PropertyAddForm: React.FC<PropertyAddFormProps> = ({
 
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: undefined
-      }));
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
     }
   };
 
@@ -156,7 +169,7 @@ export const PropertyAddForm: React.FC<PropertyAddFormProps> = ({
       newErrors.typePropertyId = 'Property type is required';
     }
 
-    if (!formData.userId.trim()) {
+    if (!formData.userId.trim() && !user?.id) {
       newErrors.userId = 'User ID is required';
     }
 
@@ -515,8 +528,14 @@ export const PropertyAddForm: React.FC<PropertyAddFormProps> = ({
                   value={formData.userId}
                   onChange={(e) => handleInputChange('userId', e.target.value)}
                   placeholder="Enter user ID"
-                  className={errors.userId ? 'border-red-500' : ''}
+                  disabled={!!user?.id}
+                  className={`${errors.userId ? 'border-red-500' : ''} ${!!user?.id ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                 />
+                {user?.id && (
+                  <p className="text-gray-500 text-sm mt-1">
+                    Automatically set from your account
+                  </p>
+                )}
                 {errors.userId && (
                   <p className="text-red-500 text-sm mt-1">{errors.userId}</p>
                 )}
