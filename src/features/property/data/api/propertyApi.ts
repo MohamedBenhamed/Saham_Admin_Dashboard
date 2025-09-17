@@ -103,7 +103,7 @@ export const propertyApi = {
    */
   async getPropertyById(id: string | number) {
     try {
-      const data = await apiRequest(`${API_BASE_URL}/getPropertyById/${id}`);
+      const data = await apiRequest(`${API_BASE_URL}/PropertyById/${id}`);
       return data;
     } catch (error) {
       console.error(`Error fetching property ${id}:`, error);

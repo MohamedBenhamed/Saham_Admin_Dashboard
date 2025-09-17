@@ -9,6 +9,8 @@ import { Investments } from '@/pages/Investments'
 import { LoginPage } from '@/pages/LoginPage'
 import { PropertyListPage } from '@/features/property/presentation/pages/PropertyListPage'
 import { PropertyAddPage } from '@/features/property/presentation/pages/PropertyAddPage'
+import { PropertyViewPage } from '@/features/property/presentation/pages/PropertyViewPage'
+import { AddInvestmentPage } from '@/features/investment/presentation/pages/AddInvestmentPage'
 
 // Placeholder components for other routes
 const Wallets = () => (
@@ -116,6 +118,8 @@ function App() {
                 <Route path="investments" element={<Investments />} />
                 <Route path="properties" element={<PropertyListPage />} />
                 <Route path="properties/add" element={<PropertyAddPage />} />
+                <Route path="properties/view/:id" element={<PropertyViewPage />} />
+                <Route path="investments/add/:propertyId" element={<AddInvestmentPage />} />
                 <Route path="wallets" element={<Wallets />} />
                 <Route path="transactions" element={<Transactions />} />
                 <Route path="analytics" element={<Analytics />} />

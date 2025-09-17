@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -17,7 +18,6 @@ import {
   Download,
   Eye,
   Edit,
-  Trash2,
   Plus,
   Building2,
   MapPin,
@@ -26,141 +26,141 @@ import {
   Users,
 } from 'lucide-react'
 import { formatDate, formatCurrency, formatNumber, getStatusColor } from '@/lib/utils'
+import { Property } from '@/features/property/domain/entities/Property'
+import { propertyApi } from '@/features/property/data/api/propertyApi'
 
-// Mock data
-const investments = [
-  {
-    id: 1,
-    name: 'Downtown Office Building',
-    location: 'New York, NY',
-    type: 'Commercial',
-    status: 'active',
-    totalValue: 2500000,
-    sharesAvailable: 1250,
-    totalShares: 2500,
-    pricePerShare: 1000,
-    roi: 12.5,
-    investors: 45,
-    startDate: '2024-01-15',
-    endDate: '2026-01-15',
-    description: 'Premium office building in the heart of Manhattan',
-  },
-  {
-    id: 2,
-    name: 'Residential Complex',
-    location: 'Los Angeles, CA',
-    type: 'Residential',
-    status: 'active',
-    totalValue: 1800000,
-    sharesAvailable: 900,
-    totalShares: 1800,
-    pricePerShare: 1000,
-    roi: 8.7,
-    investors: 32,
-    startDate: '2024-02-01',
-    endDate: '2025-12-31',
-    description: 'Modern residential complex with luxury amenities',
-  },
-  {
-    id: 3,
-    name: 'Retail Plaza',
-    location: 'Chicago, IL',
-    type: 'Retail',
-    status: 'funding',
-    totalValue: 3200000,
-    sharesAvailable: 1600,
-    totalShares: 3200,
-    pricePerShare: 1000,
-    roi: 15.2,
-    investors: 28,
-    startDate: '2024-03-01',
-    endDate: '2027-03-01',
-    description: 'Shopping plaza with major retail tenants',
-  },
-  {
-    id: 4,
-    name: 'Industrial Warehouse',
-    location: 'Houston, TX',
-    type: 'Industrial',
-    status: 'completed',
-    totalValue: 1200000,
-    sharesAvailable: 0,
-    totalShares: 1200,
-    pricePerShare: 1000,
-    roi: 18.3,
-    investors: 67,
-    startDate: '2023-06-01',
-    endDate: '2024-06-01',
-    description: 'Large industrial warehouse facility',
-  },
-  {
-    id: 5,
-    name: 'Mixed-Use Development',
-    location: 'Miami, FL',
-    type: 'Mixed-Use',
-    status: 'pending',
-    totalValue: 4500000,
-    sharesAvailable: 2250,
-    totalShares: 4500,
-    pricePerShare: 1000,
-    roi: 11.8,
-    investors: 0,
-    startDate: '2024-06-01',
-    endDate: '2028-06-01',
-    description: 'Mixed-use development with residential and commercial spaces',
-  },
-]
-
-const statusOptions = ['all', 'active', 'funding', 'completed', 'pending', 'cancelled']
-const typeOptions = ['all', 'Commercial', 'Residential', 'Retail', 'Industrial', 'Mixed-Use']
+const statusOptions = ['all', '1', '2', '3', '4', '5']
+const typeOptions = ['all', 'Apartment', 'House', 'Villa', 'Commercial', 'Land']
 
 export function Investments() {
+  const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState('all') // Default to show all available statuses
   const [typeFilter, setTypeFilter] = useState('all')
+  const [properties, setProperties] = useState<Property[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const filteredInvestments = investments.filter(investment => {
-    const matchesSearch = investment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         investment.location.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === 'all' || investment.status === statusFilter
-    const matchesType = typeFilter === 'all' || investment.type === typeFilter
+  // Fetch properties on component mount
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        console.log('Fetching properties for investments...')
+        
+        const apiData = await propertyApi.getAllProperties()
+        console.log('Raw API data:', apiData)
+        
+        // Convert API data to Property entities
+        const propertyEntities = apiData.map((propertyData: any) => {
+          try {
+            return Property.fromAPIResponse(propertyData)
+          } catch (error) {
+            console.warn('Failed to create Property entity from API data:', propertyData, error)
+            return null
+          }
+        }).filter((property: Property | null) => property !== null) as Property[]
+        
+        console.log('Property entities created:', propertyEntities)
+        setProperties(propertyEntities)
+      } catch (err) {
+        console.error('Error fetching properties:', err)
+        setError(err instanceof Error ? err.message : 'Failed to fetch properties')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProperties()
+  }, [])
+
+  // Filter properties with status "1" or "2" and apply other filters
+  const filteredInvestments = properties.filter(property => {
+    // Show properties with status "1" (Available) or "2" (Pending)
+    if (property.status !== '1' && property.status !== '2') {
+      return false
+    }
+    
+    const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         property.location.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = statusFilter === 'all' || property.status === statusFilter
+    const matchesType = typeFilter === 'all' || property.propertyType === typeFilter
     
     return matchesSearch && matchesStatus && matchesType
   })
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
-      case 'active':
+      case '1':
         return 'success'
-      case 'funding':
+      case '2':
         return 'warning'
-      case 'completed':
+      case '3':
         return 'info'
-      case 'pending':
+      case '4':
         return 'secondary'
-      case 'cancelled':
+      case '5':
         return 'error'
       default:
         return 'secondary'
     }
   }
 
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case '1':
+        return 'Available'
+      case '2':
+        return 'Pending'
+      case '3':
+        return 'Sold'
+      case '4':
+        return 'Rented'
+      case '5':
+        return 'Inactive'
+      default:
+        return 'Unknown'
+    }
+  }
+
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'Commercial':
+      case 'Apartment':
         return '🏢'
-      case 'Residential':
+      case 'House':
         return '🏠'
-      case 'Retail':
-        return '🛍️'
-      case 'Industrial':
-        return '🏭'
-      case 'Mixed-Use':
-        return '🏘️'
+      case 'Villa':
+        return '🏰'
+      case 'Commercial':
+        return '🏪'
+      case 'Land':
+        return '🌍'
       default:
         return '🏗️'
     }
   }
+
+  // Handler functions for action buttons
+  const handleAddToInvestment = (property: Property) => {
+    console.log('Adding property to investment:', property)
+    // Navigate to add investment page
+    navigate(`/admin/investments/add/${property.id}`)
+  }
+
+  const handleEditProperty = (property: Property) => {
+    console.log('Editing property:', property)
+    // TODO: Implement edit property logic
+    // This could navigate to the edit page or open an edit modal
+    alert(`Editing "${property.title}"...`)
+  }
+
+  const handleViewProperty = (property: Property) => {
+    console.log('Viewing property:', property)
+    // Navigate to property view page
+    navigate(`/admin/properties/view/${property.id}`)
+  }
+
 
   return (
     <div className="space-y-6">
@@ -186,22 +186,22 @@ export function Investments() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Investments</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">Total Properties</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{investments.length}</div>
-            <p className="text-xs text-gray-500">+3 this month</p>
+            <div className="text-2xl font-bold text-gray-900">{properties.length}</div>
+            <p className="text-xs text-gray-500">All properties</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Active Investments</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">Investment Properties</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-gray-900">
-              {investments.filter(i => i.status === 'active').length}
+              {properties.filter(p => p.status === '1' || p.status === '2').length}
             </div>
-            <p className="text-xs text-gray-500">Currently available</p>
+            <p className="text-xs text-gray-500">Available & Pending</p>
           </CardContent>
         </Card>
         <Card>
@@ -210,20 +210,20 @@ export function Investments() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-gray-900">
-              {formatCurrency(investments.reduce((sum, i) => sum + i.totalValue, 0))}
+              {formatCurrency(properties.reduce((sum, p) => sum + p.price, 0))}
             </div>
-            <p className="text-xs text-gray-500">Across all investments</p>
+            <p className="text-xs text-gray-500">Across all properties</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Investors</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">Property Types</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-gray-900">
-              {investments.reduce((sum, i) => sum + i.investors, 0)}
+              {new Set(properties.map(p => p.propertyType)).size}
             </div>
-            <p className="text-xs text-gray-500">Active participants</p>
+            <p className="text-xs text-gray-500">Different types</p>
           </CardContent>
         </Card>
       </div>
@@ -273,98 +273,119 @@ export function Investments() {
             </div>
           </div>
 
-          {/* Investments Table */}
+          {/* Properties Table */}
           <div className="border border-gray-200 rounded-large overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Investment</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Total Value</TableHead>
-                  <TableHead>Shares</TableHead>
-                  <TableHead>ROI</TableHead>
-                  <TableHead>Investors</TableHead>
-                  <TableHead>Start Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredInvestments.map((investment) => (
-                  <TableRow key={investment.id}>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium text-gray-900 flex items-center">
-                          <span className="mr-2">{getTypeIcon(investment.type)}</span>
-                          {investment.name}
-                        </div>
-                        <div className="text-sm text-gray-500 flex items-center">
-                          <MapPin className="w-3 h-3 mr-1" />
-                          {investment.location}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{investment.type}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={getStatusBadgeVariant(investment.status) as any}>
-                        {investment.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="font-medium text-gray-900">
-                        {formatCurrency(investment.totalValue)}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {formatCurrency(investment.pricePerShare)}/share
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="font-medium text-gray-900">
-                        {formatNumber(investment.sharesAvailable)}/{formatNumber(investment.totalShares)}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {((investment.sharesAvailable / investment.totalShares) * 100).toFixed(1)}% available
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center text-success">
-                        <TrendingUp className="w-4 h-4 mr-1" />
-                        {investment.roi}%
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center">
-                        <Users className="w-4 h-4 mr-1 text-gray-400" />
-                        {investment.investors}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {formatDate(investment.startDate)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end space-x-2">
-                        <Button size="sm" variant="ghost">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="ghost">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="ghost" className="text-error">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+            {loading ? (
+              <div className="p-8 text-center">
+                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-600">Loading properties...</p>
+              </div>
+            ) : error ? (
+              <div className="p-8 text-center">
+                <p className="text-red-600">Error: {error}</p>
+                <Button 
+                  onClick={() => window.location.reload()} 
+                  className="mt-4"
+                  variant="outline"
+                >
+                  Retry
+                </Button>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Property</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Location</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {filteredInvestments.map((property) => (
+                    <TableRow key={property.id}>
+                      <TableCell>
+                        <div>
+                          <div className="font-medium text-gray-900 flex items-center">
+                            <span className="mr-2">{getTypeIcon(property.propertyType)}</span>
+                            {property.title}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{property.propertyType}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={getStatusBadgeVariant(property.status) as any}>
+                          {getStatusLabel(property.status)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-medium text-gray-900">
+                          {property.getFormattedPrice()}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm text-gray-600">
+                          {property.location}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {formatDate(property.createdAt)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end space-x-2">
+                          <Button 
+                            size="sm" 
+                            variant="ghost"
+                            onClick={() => handleViewProperty(property)}
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          
+                          {/* Conditional action buttons based on status */}
+                          {property.status === '1' ? (
+                            <Button 
+                              size="sm" 
+                              variant="default"
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                              onClick={() => handleAddToInvestment(property)}
+                            >
+                              <Plus className="w-4 h-4 mr-1" />
+                              Add to Investment
+                            </Button>
+                          ) : property.status === '2' ? (
+                            <Button 
+                              size="sm" 
+                              variant="ghost"
+                              onClick={() => handleEditProperty(property)}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          ) : (
+                            <Button 
+                              size="sm" 
+                              variant="ghost"
+                              onClick={() => handleEditProperty(property)}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </div>
 
-          {filteredInvestments.length === 0 && (
+          {!loading && !error && filteredInvestments.length === 0 && (
             <div className="text-center py-8">
-              <p className="text-gray-500">No investments found matching your criteria.</p>
+              <p className="text-gray-500">No properties with status "1" or "2" found matching your criteria.</p>
             </div>
           )}
         </CardContent>
