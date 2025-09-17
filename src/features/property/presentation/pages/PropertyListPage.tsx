@@ -358,7 +358,7 @@ export const PropertyListPage = () => {
             : 'grid-cols-1'
         }`}>
           {Array.from({ length: 8 }).map((_, index) => (
-            <PropertyCardSkeleton key={index} />
+            <PropertyCardSkeleton key={index} viewMode={viewMode} />
           ))}
         </div>
       ) : sortedProperties.length === 0 ? (
@@ -393,7 +393,7 @@ export const PropertyListPage = () => {
               onView={handleViewProperty}
               onEdit={handleEditProperty}
               onDelete={handleDeleteProperty}
-              className={viewMode === 'list' ? 'flex flex-row' : ''}
+              viewMode={viewMode}
             />
           ))}
         </div>
