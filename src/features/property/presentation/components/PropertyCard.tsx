@@ -188,7 +188,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 
       <CardContent className="pt-0">
         {/* Property Details */}
-        <div className="grid grid-cols-3 gap-2 mb-4">
+        <div className="grid grid-cols-2 gap-2 mb-3">
           <div className="flex items-center text-sm text-gray-600 min-w-0">
             <Bed className="w-4 h-4 mr-1 flex-shrink-0" />
             <span className="truncate">{property.bedrooms || 0} bed</span>
@@ -197,14 +197,14 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
             <Bath className="w-4 h-4 mr-1 flex-shrink-0" />
             <span className="truncate">{property.bathrooms || 0} bath</span>
           </div>
-          <div className="flex items-center text-sm text-gray-600 min-w-0">
+        </div>
+        
+        {/* Area and Property Type */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center text-sm text-gray-600">
             <Square className="w-4 h-4 mr-1 flex-shrink-0" />
             <span className="truncate">{property.area || 0} sq ft</span>
           </div>
-        </div>
-
-        {/* Property Type */}
-        <div className="mb-3">
           <Badge variant="outline" className="text-xs">
             {propertyTypeLoading ? (
               <span className="text-gray-400">Loading...</span>
@@ -214,15 +214,6 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           </Badge>
         </div>
 
-        {/* Description */}
-        {property.description && (
-          <p 
-            className="text-sm text-gray-600 mb-4 line-clamp-2"
-            title={property.description}
-          >
-            {property.description}
-          </p>
-        )}
 
         {/* Property Info */}
         <div className="space-y-2 mb-4 text-xs text-gray-500">
@@ -320,17 +311,18 @@ export const PropertyCardSkeleton = ({ className = '' }) => {
 
       <CardContent className="pt-0">
         {/* Details Skeleton */}
-        <div className="grid grid-cols-3 gap-2 mb-4">
-          {[1, 2, 3].map((i) => (
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          {[1, 2].map((i) => (
             <div key={i} className="h-4 bg-gray-200 rounded animate-pulse" />
           ))}
         </div>
-
-        {/* Description Skeleton */}
-        <div className="space-y-2 mb-4">
-          <div className="h-3 bg-gray-200 rounded animate-pulse" />
-          <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3" />
+        
+        {/* Area and Property Type Skeleton */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="h-4 bg-gray-200 rounded animate-pulse w-16" />
+          <div className="h-5 bg-gray-200 rounded animate-pulse w-20" />
         </div>
+
 
         {/* Button Skeleton */}
         <div className="flex gap-2">
