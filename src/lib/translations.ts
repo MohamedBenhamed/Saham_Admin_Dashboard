@@ -160,6 +160,36 @@ export const translations = {
     refresh: 'Refresh',
     addProperty: 'Add Property',
     
+    // User Management
+    managePlatformUsers: 'Manage platform users and their accounts',
+    userManagement: 'User Management',
+    searchAndFilterUsers: 'Search and filter users by various criteria',
+    searchUsersPlaceholder: 'Search users by name, email, or phone...',
+    name: 'Name',
+    phoneNumber: 'Phone Number',
+    email: 'Email',
+    createdDate: 'Created Date',
+    showingUsers: 'Showing {count} of {total} users',
+    matchingUserSearch: 'matching "{search}"',
+    export: 'Export',
+    addUser: 'Add User',
+    
+    // Cities Management
+    citiesManagement: 'Cities Management',
+    manageCitiesInfo: 'Manage cities and their information',
+    addCity: 'Add City',
+    searchCitiesPlaceholder: 'Search cities by name or country...',
+    citiesList: 'Cities List',
+    cityName: 'City Name',
+    
+    // Property Types Management
+    propertyTypesManagement: 'Property Types Management',
+    managePropertyTypesInfo: 'Manage property types and their information',
+    addPropertyType: 'Add Property Type',
+    searchPropertyTypesPlaceholder: 'Search property types by name...',
+    propertyTypesList: 'Property Types List',
+    propertyTypeName: 'Property Type Name',
+    
     // Error Messages
     failedToFetchProperties: 'Failed to fetch properties',
     failedToFetchCities: 'Failed to fetch cities',
@@ -186,8 +216,6 @@ export const translations = {
     
     // Actions
     signIn: 'Sign In',
-    addCity: 'Add City',
-    addPropertyType: 'Add Property Type',
   },
   ar: {
     // Navigation
@@ -350,6 +378,36 @@ export const translations = {
     refresh: 'تحديث',
     addProperty: 'إضافة عقار',
     
+    // User Management
+    managePlatformUsers: 'إدارة مستخدمي المنصة وحساباتهم',
+    userManagement: 'إدارة المستخدمين',
+    searchAndFilterUsers: 'البحث والتصفية في المستخدمين حسب معايير مختلفة',
+    searchUsersPlaceholder: 'البحث في المستخدمين بالاسم أو البريد الإلكتروني أو الهاتف...',
+    name: 'الاسم',
+    phoneNumber: 'رقم الهاتف',
+    email: 'البريد الإلكتروني',
+    createdDate: 'تاريخ الإنشاء',
+    showingUsers: 'عرض {count} من {total} مستخدم',
+    matchingUserSearch: 'مطابق لـ "{search}"',
+    export: 'تصدير',
+    addUser: 'إضافة مستخدم',
+    
+    // Cities Management
+    citiesManagement: 'إدارة المدن',
+    manageCitiesInfo: 'إدارة المدن ومعلوماتها',
+    addCity: 'إضافة مدينة',
+    searchCitiesPlaceholder: 'البحث في المدن بالاسم أو البلد...',
+    citiesList: 'قائمة المدن',
+    cityName: 'اسم المدينة',
+    
+    // Property Types Management
+    propertyTypesManagement: 'إدارة أنواع العقارات',
+    managePropertyTypesInfo: 'إدارة أنواع العقارات ومعلوماتها',
+    addPropertyType: 'إضافة نوع عقار',
+    searchPropertyTypesPlaceholder: 'البحث في أنواع العقارات بالاسم...',
+    propertyTypesList: 'قائمة أنواع العقارات',
+    propertyTypeName: 'اسم نوع العقار',
+    
     // Error Messages
     failedToFetchProperties: 'فشل في جلب العقارات',
     failedToFetchCities: 'فشل في جلب المدن',
@@ -376,8 +434,6 @@ export const translations = {
     
     // Actions
     signIn: 'تسجيل الدخول',
-    addCity: 'إضافة مدينة',
-    addPropertyType: 'إضافة نوع عقار',
   },
 }
 

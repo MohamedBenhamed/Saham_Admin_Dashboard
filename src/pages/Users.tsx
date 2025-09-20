@@ -29,9 +29,11 @@ import { useNavigate } from 'react-router-dom'
 
 import { useUsers } from '@/features/user/hooks/useUsers'
 import { UserData } from '@/features/user/data/api/userApi'
+import { useTranslation } from '@/hooks/useTranslation'
 
 
 export function Users() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -115,21 +117,21 @@ export function Users() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Users</h1>
-          <p className="text-gray-600 mt-1">Manage platform users and their accounts</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('users')}</h1>
+          <p className="text-gray-600 mt-1">{t('managePlatformUsers')}</p>
         </div>
         <div className="flex space-x-3">
           <Button variant="outline" onClick={handleRefresh} disabled={refreshing}>
             <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            Refresh
+            {t('refresh')}
           </Button>
           <Button variant="outline">
             <Download className="w-4 h-4 mr-2" />
-            Export
+            {t('export')}
           </Button>
           <Button onClick={() => navigate('/admin/users/add')}>
             <UserPlus className="w-4 h-4 mr-2" />
-            Add User
+            {t('addUser')}
           </Button>
         </div>
       </div>
@@ -138,8 +140,8 @@ export function Users() {
       {/* Filters and Search */}
       <Card>
         <CardHeader>
-          <CardTitle>User Management</CardTitle>
-          <CardDescription>Search and filter users by various criteria</CardDescription>
+          <CardTitle>{t('userManagement')}</CardTitle>
+          <CardDescription>{t('searchAndFilterUsers')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -147,7 +149,7 @@ export function Users() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
-                  placeholder="Search users by name, email, or phone..."
+                  placeholder={t('searchUsersPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -161,11 +163,11 @@ export function Users() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Phone Number</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Created Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t('name')}</TableHead>
+                  <TableHead>{t('phoneNumber')}</TableHead>
+                  <TableHead>{t('email')}</TableHead>
+                  <TableHead>{t('createdDate')}</TableHead>
+                  <TableHead className="text-right">{t('actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -238,8 +240,8 @@ export function Users() {
           {/* Results Summary */}
           <div className="flex items-center justify-between mt-4">
             <div className="text-sm text-gray-600">
-              Showing {filteredUsers.length} of {users.length} users
-              {searchTerm && ` matching "${searchTerm}"`}
+              {t('showingUsers').replace('{count}', filteredUsers.length.toString()).replace('{total}', users.length.toString())}
+              {searchTerm && ` ${t('matchingUserSearch').replace('{search}', searchTerm)}`}
             </div>
             <div className="flex items-center space-x-2">
               {searchTerm && (
