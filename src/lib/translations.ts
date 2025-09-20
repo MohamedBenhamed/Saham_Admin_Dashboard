@@ -146,6 +146,20 @@ export const translations = {
     manageInvestmentProperties: 'Manage investment properties and opportunities',
     addToInvestment: 'Add to Investment',
     
+    // Property Management
+    manageAndViewProperties: 'Manage and view all properties',
+    searchPropertiesPlaceholder: 'Search properties by title, location, or type...',
+    filters: 'Filters',
+    showingProperties: 'Showing {count} of {total} properties',
+    matchingSearch: 'matching "{search}"',
+    ofType: 'of type "{type}"',
+    bed: 'bed',
+    bath: 'bath',
+    listed: 'Listed',
+    view: 'View',
+    refresh: 'Refresh',
+    addProperty: 'Add Property',
+    
     // Error Messages
     failedToFetchProperties: 'Failed to fetch properties',
     failedToFetchCities: 'Failed to fetch cities',
@@ -321,6 +335,20 @@ export const translations = {
     actions: 'الإجراءات',
     manageInvestmentProperties: 'إدارة عقارات الاستثمار والفرص',
     addToInvestment: 'إضافة للاستثمار',
+    
+    // Property Management
+    manageAndViewProperties: 'إدارة وعرض جميع العقارات',
+    searchPropertiesPlaceholder: 'البحث في العقارات بالعنوان أو الموقع أو النوع...',
+    filters: 'المرشحات',
+    showingProperties: 'عرض {count} من {total} عقار',
+    matchingSearch: 'مطابق لـ "{search}"',
+    ofType: 'من نوع "{type}"',
+    bed: 'غرفة نوم',
+    bath: 'حمام',
+    listed: 'مدرج',
+    view: 'عرض',
+    refresh: 'تحديث',
+    addProperty: 'إضافة عقار',
     
     // Error Messages
     failedToFetchProperties: 'فشل في جلب العقارات',

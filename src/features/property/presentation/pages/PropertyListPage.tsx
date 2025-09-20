@@ -151,17 +151,17 @@ export const PropertyListPage = () => {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Properties</h1>
-          <p className="text-gray-600 mt-1">Manage and view all properties</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('properties')}</h1>
+          <p className="text-gray-600 mt-1">{t('manageAndViewProperties')}</p>
         </div>
         <div className="flex space-x-3">
           <Button variant="outline" onClick={handleRefresh} disabled={refreshing}>
             <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            Refresh
+            {t('refresh')}
           </Button>
           <Button onClick={handleAddProperty}>
             <Plus className="w-4 h-4 mr-2" />
-            Add Property
+            {t('addProperty')}
           </Button>
         </div>
       </div>
@@ -176,7 +176,7 @@ export const PropertyListPage = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
-                  placeholder="Search properties by title, location, or type..."
+                  placeholder={t('searchPropertiesPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -192,7 +192,7 @@ export const PropertyListPage = () => {
                 className={showFilters ? 'bg-gray-100' : ''}
               >
                 <Filter className="w-4 h-4 mr-2" />
-                Filters
+                {t('filters')}
               </Button>
 
               <div className="flex border rounded-md">
@@ -279,9 +279,9 @@ export const PropertyListPage = () => {
       {/* Results Summary */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-gray-600">
-          Showing {sortedProperties.length} of {properties.length} properties
-          {searchTerm && ` matching "${searchTerm}"`}
-          {selectedType && ` of type "${selectedType}"`}
+          {t('showingProperties').replace('{count}', sortedProperties.length.toString()).replace('{total}', properties.length.toString())}
+          {searchTerm && ` ${t('matchingSearch').replace('{search}', searchTerm)}`}
+          {selectedType && ` ${t('ofType').replace('{type}', selectedType)}`}
         </div>
         <div className="flex items-center space-x-2">
           {selectedType && (

@@ -23,6 +23,7 @@ import { Property } from '@/features/property/domain/entities/Property';
 import { useCityName } from '@/hooks/useCity';
 import { usePropertyTypeName } from '@/hooks/usePropertyType';
 import { useRTL } from '@/hooks/useRTL';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface PropertyCardProps {
   property: Property | null;
@@ -53,6 +54,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   className = '',
   viewMode = 'grid'
 }) => {
+  const { t } = useTranslation();
   // Get city name by ID
   const { cityName, loading: cityLoading } = useCityName(property?.cityId);
   
@@ -180,11 +182,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
                 <div className="flex items-center space-x-4 text-sm text-gray-600">
                   <div className="flex items-center">
                     <Bed className={`w-4 h-4 ${getMargin('mr-1', 'ml-1')}`} />
-                    <span>{property.bedrooms || 0} bed</span>
+                    <span>{property.bedrooms || 0} {t('bed')}</span>
                   </div>
                   <div className="flex items-center">
                     <Bath className={`w-4 h-4 ${getMargin('mr-1', 'ml-1')}`} />
-                    <span>{property.bathrooms || 0} bath</span>
+                    <span>{property.bathrooms || 0} {t('bath')}</span>
                   </div>
                   <div className="flex items-center">
                     <Square className={`w-4 h-4 ${getMargin('mr-1', 'ml-1')}`} />
@@ -212,7 +214,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
                   {property.createdAt && (
                     <div className="flex items-center">
                       <Calendar className={`w-3 h-3 ${getMargin('mr-1', 'ml-1')}`} />
-                      <span>Listed: {formatDate(property.createdAt)}</span>
+                      <span>{t('listed')}: {formatDate(property.createdAt)}</span>
                     </div>
                   )}
                 </div>
@@ -226,7 +228,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
                       onClick={handleView}
                     >
                       <Eye className={`w-4 h-4 ${getMargin('mr-1', 'ml-1')}`} />
-                      View
+                      {t('view')}
                     </Button>
                     {onEdit && (
                       <Button
@@ -345,11 +347,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         <div className="grid grid-cols-2 gap-2 mb-3">
           <div className="flex items-center text-sm text-gray-600 min-w-0">
             <Bed className={`w-4 h-4 ${getMargin('mr-1', 'ml-1')} flex-shrink-0`} />
-            <span className="truncate">{property.bedrooms || 0} bed</span>
+            <span className="truncate">{property.bedrooms || 0} {t('bed')}</span>
           </div>
           <div className="flex items-center text-sm text-gray-600 min-w-0">
             <Bath className={`w-4 h-4 ${getMargin('mr-1', 'ml-1')} flex-shrink-0`} />
-            <span className="truncate">{property.bathrooms || 0} bath</span>
+            <span className="truncate">{property.bathrooms || 0} {t('bath')}</span>
           </div>
         </div>
         
@@ -379,7 +381,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           {property.createdAt && (
             <div className="flex items-center">
               <Calendar className={`w-3 h-3 ${getMargin('mr-1', 'ml-1')}`} />
-              <span>Listed: {formatDate(property.createdAt)}</span>
+              <span>{t('listed')}: {formatDate(property.createdAt)}</span>
             </div>
           )}
         </div>
@@ -413,7 +415,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
               onClick={handleView}
             >
               <Eye className={`w-4 h-4 ${getMargin('mr-1', 'ml-1')} flex-shrink-0`} />
-              <span className="truncate">View</span>
+              <span className="truncate">{t('view')}</span>
             </Button>
             {onEdit && (
               <Button
