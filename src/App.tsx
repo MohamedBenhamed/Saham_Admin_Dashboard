@@ -5,6 +5,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { AdminLayout } from '@/components/layout/AdminLayout'
 import { Dashboard } from '@/pages/Dashboard'
 import { Users } from '@/pages/Users'
+import { AddUserPage } from '@/features/user/presentation/pages/AddUserPage'
 import { Investments } from '@/pages/Investments'
 import { LoginPage } from '@/pages/LoginPage'
 import { PropertyListPage } from '@/features/property/presentation/pages/PropertyListPage'
@@ -119,6 +120,7 @@ function App() {
               }>
                 <Route index element={<Dashboard />} />
                 <Route path="users" element={<Users />} />
+                <Route path="users/add" element={<AddUserPage />} />
                 <Route path="investments" element={<Investments />} />
                 <Route path="properties" element={<PropertyListPage />} />
                 <Route path="properties/add" element={<PropertyAddPage />} />

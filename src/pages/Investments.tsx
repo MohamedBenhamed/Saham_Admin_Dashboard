@@ -29,9 +29,9 @@ import { Property } from '@/features/property/domain/entities/Property'
 import { propertyApi } from '@/features/property/data/api/propertyApi'
 import { useCityName } from '@/hooks/useCity'
 import { usePropertyTypeName } from '@/hooks/usePropertyType'
+import { useTranslation } from '@/hooks/useTranslation'
 
-const statusOptions = ['all', '1', '2', '3', '4', '5']
-const typeOptions = ['all', 'Apartment', 'House', 'Villa', 'Commercial', 'Land']
+const statusOptions = ['all', '1', '2']
 
 // Component to display city name by ID
 const CityNameCell: React.FC<{ cityId?: number; fallback?: string }> = ({ cityId, fallback = 'N/A' }) => {
@@ -56,10 +56,10 @@ const PropertyTypeNameCell: React.FC<{ typePropertyId?: number; fallback?: strin
 };
 
 export function Investments() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all') // Default to show all available statuses
-  const [typeFilter, setTypeFilter] = useState('all')
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -108,17 +108,16 @@ export function Investments() {
     const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          property.location.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === 'all' || property.status === statusFilter
-    const matchesType = typeFilter === 'all' || property.propertyType === typeFilter
     
-    return matchesSearch && matchesStatus && matchesType
+    return matchesSearch && matchesStatus
   })
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case '1':
-        return 'success'
+        return 'warning'  // Orange for Pending
       case '2':
-        return 'warning'
+        return 'success'  // Green for Active
       case '3':
         return 'info'
       case '4':
@@ -133,17 +132,17 @@ export function Investments() {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case '1':
-        return 'Available'
+        return t('pending')
       case '2':
-        return 'Pending'
+        return t('active')
       case '3':
-        return 'Sold'
+        return t('sold')
       case '4':
-        return 'Rented'
+        return t('rented')
       case '5':
-        return 'Inactive'
+        return t('inactive')
       default:
-        return 'Unknown'
+        return t('unknown')
     }
   }
 
@@ -190,68 +189,23 @@ export function Investments() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Investments</h1>
-          <p className="text-gray-600 mt-1">Manage investment properties and opportunities</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('investments')}</h1>
+          <p className="text-gray-600 mt-1">{t('manageInvestmentProperties')}</p>
         </div>
         <div className="flex space-x-3">
           <Button>
             <Plus className="w-4 h-4 mr-2" />
-            Add Investment
+            {t('addInvestment')}
           </Button>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Properties</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{properties.length}</div>
-            <p className="text-xs text-gray-500">All properties</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Investment Properties</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
-              {properties.filter(p => p.status === '1' || p.status === '2').length}
-            </div>
-            <p className="text-xs text-gray-500">Available & Pending</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Value</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
-              {formatCurrency(properties.reduce((sum, p) => sum + p.price, 0))}
-            </div>
-            <p className="text-xs text-gray-500">Across all properties</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Property Types</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
-              {new Set(properties.map(p => p.propertyType)).size}
-            </div>
-            <p className="text-xs text-gray-500">Different types</p>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Filters and Search */}
       <Card>
         <CardHeader>
-          <CardTitle>Investment Management</CardTitle>
-          <CardDescription>Search and filter investments by various criteria</CardDescription>
+          <CardTitle>{t('investmentManagement')}</CardTitle>
+          <CardDescription>{t('searchAndFilterInvestments')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -259,7 +213,7 @@ export function Investments() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
-                  placeholder="Search investments by name or location..."
+                  placeholder={t('searchInvestmentsPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -274,18 +228,9 @@ export function Investments() {
               >
                 {statusOptions.map(option => (
                   <option key={option} value={option}>
-                    {option.charAt(0).toUpperCase() + option.slice(1)} Status
-                  </option>
-                ))}
-              </select>
-              <select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-medium focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              >
-                {typeOptions.map(option => (
-                  <option key={option} value={option}>
-                    {option} Type
+                    {option === 'all' ? t('allStatus') : 
+                     option === '1' ? t('pending') : 
+                     t('active')}
                   </option>
                 ))}
               </select>
@@ -314,13 +259,13 @@ export function Investments() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Property</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{t('property')}</TableHead>
+                    <TableHead>{t('type')}</TableHead>
+                    <TableHead>{t('status')}</TableHead>
+                    <TableHead>{t('price')}</TableHead>
+                    <TableHead>{t('location')}</TableHead>
+                    <TableHead>{t('created')}</TableHead>
+                    <TableHead className="text-right">{t('actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -376,7 +321,7 @@ export function Investments() {
                               onClick={() => handleAddToInvestment(property)}
                             >
                               <Plus className="w-4 h-4 mr-1" />
-                              Add to Investment
+                              {t('addToInvestment')}
                             </Button>
                           ) : property.status === '2' ? (
                             <Button 

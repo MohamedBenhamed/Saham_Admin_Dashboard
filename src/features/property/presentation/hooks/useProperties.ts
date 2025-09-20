@@ -84,19 +84,19 @@ export const useProperties = (options = {}) => {
    */
   const filterProperties = useCallback((criteria) => {
     return properties.filter(property => {
-      if (criteria.propertyType && property.propertyType !== criteria.propertyType) {
+      if (criteria.propertyType && (property.propertyType || '') !== criteria.propertyType) {
         return false;
       }
       
-      if (criteria.minPrice && property.price < criteria.minPrice) {
+      if (criteria.minPrice && (property.price || 0) < criteria.minPrice) {
         return false;
       }
       
-      if (criteria.maxPrice && property.price > criteria.maxPrice) {
+      if (criteria.maxPrice && (property.price || 0) > criteria.maxPrice) {
         return false;
       }
       
-      if (criteria.location && !property.location.toLowerCase().includes(criteria.location.toLowerCase())) {
+      if (criteria.location && !(property.location || '').toLowerCase().includes(criteria.location.toLowerCase())) {
         return false;
       }
       
@@ -113,8 +113,8 @@ export const useProperties = (options = {}) => {
    */
   const sortProperties = useCallback((sortBy, sortOrder = 'asc') => {
     return [...properties].sort((a, b) => {
-      let aValue = a[sortBy];
-      let bValue = b[sortBy];
+      let aValue = a[sortBy] || '';
+      let bValue = b[sortBy] || '';
 
       if (typeof aValue === 'string') {
         aValue = aValue.toLowerCase();
@@ -171,12 +171,18 @@ export const useProperties = (options = {}) => {
     if (!searchTerm) return properties;
     
     const term = searchTerm.toLowerCase();
-    return properties.filter(property => 
-      property.title.toLowerCase().includes(term) ||
-      property.description.toLowerCase().includes(term) ||
-      property.location.toLowerCase().includes(term) ||
-      property.propertyType.toLowerCase().includes(term)
-    );
+    return properties.filter(property => {
+      // Safely check each field with fallbacks
+      const title = (property.title || '').toLowerCase();
+      const description = (property.description || '').toLowerCase();
+      const location = (property.location || '').toLowerCase();
+      const propertyType = (property.propertyType || '').toLowerCase();
+      
+      return title.includes(term) ||
+             description.includes(term) ||
+             location.includes(term) ||
+             propertyType.includes(term);
+    });
   }, [properties]);
 
   // Fetch properties on mount only

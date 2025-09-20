@@ -7,7 +7,6 @@ import {
   LayoutDashboard,
   Users,
   Building2,
-  Wallet,
   FileText,
   Settings,
   BarChart3,
@@ -38,12 +37,6 @@ const navigationItems = [
     current: false,
   },
   {
-    nameKey: 'users' as const,
-    href: '/admin/users',
-    icon: Users,
-    current: false,
-  },
-  {
     nameKey: 'investments' as const,
     href: '/admin/investments',
     icon: Building2,
@@ -53,12 +46,6 @@ const navigationItems = [
     nameKey: 'properties' as const,
     href: '/admin/properties',
     icon: Building2,
-    current: false,
-  },
-  {
-    nameKey: 'wallets' as const,
-    href: '/admin/wallets',
-    icon: Wallet,
     current: false,
   },
   {
@@ -96,6 +83,11 @@ const secondaryItems = [
 ]
 
 const systemManagementItems = [
+  {
+    nameKey: 'users' as const,
+    href: '/admin/users',
+    icon: Users,
+  },
   {
     nameKey: 'cities' as const,
     href: '/admin/settings/cities',

@@ -51,7 +51,6 @@ export const translations = {
     quickActions: 'Quick Actions',
     commonAdministrativeTasks: 'Common administrative tasks',
     manageUsers: 'Manage Users',
-    addInvestment: 'Add Investment',
     viewAnalytics: 'View Analytics',
     processTransactions: 'Process Transactions',
     
@@ -64,7 +63,6 @@ export const translations = {
     
     // Property Status
     available: 'Available',
-    pending: 'Pending',
     sold: 'Sold',
     rented: 'Rented',
     inactive: 'Inactive',
@@ -130,6 +128,23 @@ export const translations = {
     enterInvestmentTitle: 'Enter investment title',
     enterInvestmentDescription: 'Enter investment description',
     enterDurationInMonths: 'Enter duration in months',
+    
+    // Investment Management
+    investmentManagement: 'Investment Management',
+    searchAndFilterInvestments: 'Search and filter investments by various criteria',
+    searchInvestmentsPlaceholder: 'Search investments by name or location...',
+    allStatus: 'All Status',
+    pending: 'Pending',
+    active: 'Active',
+    property: 'Property',
+    type: 'Type',
+    status: 'Status',
+    price: 'Price',
+    location: 'Location',
+    created: 'Created',
+    actions: 'Actions',
+    manageInvestmentProperties: 'Manage investment properties and opportunities',
+    addToInvestment: 'Add to Investment',
     
     // Error Messages
     failedToFetchProperties: 'Failed to fetch properties',
@@ -212,7 +227,6 @@ export const translations = {
     quickActions: 'الإجراءات السريعة',
     commonAdministrativeTasks: 'المهام الإدارية الشائعة',
     manageUsers: 'إدارة المستخدمين',
-    addInvestment: 'إضافة استثمار',
     viewAnalytics: 'عرض التحليلات',
     processTransactions: 'معالجة المعاملات',
     
@@ -225,7 +239,6 @@ export const translations = {
     
     // Property Status
     available: 'متاح',
-    pending: 'معلق',
     sold: 'مباع',
     rented: 'مؤجر',
     inactive: 'غير نشط',
@@ -291,6 +304,23 @@ export const translations = {
     enterInvestmentTitle: 'أدخل عنوان الاستثمار',
     enterInvestmentDescription: 'أدخل وصف الاستثمار',
     enterDurationInMonths: 'أدخل المدة بالأشهر',
+    
+    // Investment Management
+    investmentManagement: 'إدارة الاستثمارات',
+    searchAndFilterInvestments: 'البحث والتصفية في الاستثمارات حسب معايير مختلفة',
+    searchInvestmentsPlaceholder: 'البحث في الاستثمارات بالاسم أو الموقع...',
+    allStatus: 'جميع الحالات',
+    pending: 'معلق',
+    active: 'نشط',
+    property: 'العقار',
+    type: 'النوع',
+    status: 'الحالة',
+    price: 'السعر',
+    location: 'الموقع',
+    created: 'تاريخ الإنشاء',
+    actions: 'الإجراءات',
+    manageInvestmentProperties: 'إدارة عقارات الاستثمار والفرص',
+    addToInvestment: 'إضافة للاستثمار',
     
     // Error Messages
     failedToFetchProperties: 'فشل في جلب العقارات',

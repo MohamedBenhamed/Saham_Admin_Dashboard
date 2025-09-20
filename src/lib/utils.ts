@@ -62,22 +62,26 @@ export function debounce<T extends (...args: any[]) => any>(
 
 export function getStatusColor(status: string): string {
   switch (status.toLowerCase()) {
+    case '1':
     case 'active':
     case 'completed':
     case 'success':
-      return 'bg-success text-white'
+      return 'bg-green-100 text-green-800'
+    case '2':
     case 'pending':
     case 'processing':
-      return 'bg-warning text-white'
+      return 'bg-green-100 text-green-800'
+    case '3':
+    case '4':
+    case '5':
     case 'inactive':
     case 'cancelled':
     case 'failed':
-      return 'bg-error text-white'
+      return 'bg-red-100 text-red-800'
     case 'draft':
-    case 'inactive':
-      return 'bg-gray-500 text-white'
+      return 'bg-gray-100 text-gray-800'
     default:
-      return 'bg-gray-500 text-white'
+      return 'bg-gray-100 text-gray-800'
   }
 }
 

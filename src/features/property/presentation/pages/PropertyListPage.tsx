@@ -15,10 +15,7 @@ import {
   List, 
   Plus,
   RefreshCw,
-  AlertCircle,
-  TrendingUp,
-  MapPin,
-  Home
+  AlertCircle
 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useProperties } from '../hooks/useProperties';
@@ -43,10 +40,8 @@ export const PropertyListPage = () => {
     loading,
     error,
     refreshing,
-    statistics,
     propertyTypes,
     priceRange,
-    availableCount,
     refreshProperties,
     filterProperties,
     sortProperties,
@@ -171,54 +166,6 @@ export const PropertyListPage = () => {
         </div>
       </div>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="admin-card admin-card-hover">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Properties</CardTitle>
-            <Home className="h-4 w-4 text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{statistics.total}</div>
-            <p className="text-xs text-gray-500">All properties in system</p>
-          </CardContent>
-        </Card>
-
-        <Card className="admin-card admin-card-hover">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Available</CardTitle>
-            <TrendingUp className="h-4 w-4 text-success" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-success">{availableCount}</div>
-            <p className="text-xs text-gray-500">Ready for sale/rent</p>
-          </CardContent>
-        </Card>
-
-        <Card className="admin-card admin-card-hover">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Average Price</CardTitle>
-            <TrendingUp className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-primary">
-              ${statistics.averagePrice?.toLocaleString() || '0'}
-            </div>
-            <p className="text-xs text-gray-500">Market average</p>
-          </CardContent>
-        </Card>
-
-        <Card className="admin-card admin-card-hover">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Property Types</CardTitle>
-            <MapPin className="h-4 w-4 text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{propertyTypes.length}</div>
-            <p className="text-xs text-gray-500">Different categories</p>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Search and Filters */}
       <Card className="admin-card">
@@ -364,7 +311,7 @@ export const PropertyListPage = () => {
       ) : sortedProperties.length === 0 ? (
         <Card className="admin-card">
           <CardContent className="p-12 text-center">
-            <Home className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
               No Properties Found
             </h3>
